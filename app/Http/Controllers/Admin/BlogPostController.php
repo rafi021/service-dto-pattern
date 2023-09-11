@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\BlogPostSource;
-use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Enums\BlogPostSource;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Services\Blog\BlogPostService;
+use App\Http\Requests\StoreBlogPostAppRequest;
+use App\Http\Resources\Admin\BlogPostResource;
 
 class BlogPostController extends Controller
 {
-    public function store(Request $request): JsonResponse
-    {
-        $post = BlogPost::create([
-            'title' => $request->title,
-            'body' => $request->body,
-            'source' => BlogPostSource::App,
-        ]);
+    public function __construct(protected BlogPostService $service){}
 
-        return response()->json([
-            'post' => $post
-        ]);
+    public function store(StoreBlogPostAppRequest $request): BlogPostResource
+    {
+        $post = $this->service->store(
+            $request->validated('title'),
+            $request->validated('body'),
+            BlogPostSource::App
+        );
+
+        return BlogPostResource::make(
+            $post
+        );
     }
 }
