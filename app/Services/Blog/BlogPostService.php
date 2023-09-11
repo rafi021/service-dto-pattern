@@ -15,4 +15,12 @@ class BlogPostService
             'source' => $blogPostSource,
         ]);
     }
+
+    public function update(BlogPost $blogPost, string $title, string $body)
+    {
+       return tap($blogPost)->update([
+            'title' => $title,
+            'body' => $body
+        ]);
+    }
 }

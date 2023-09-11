@@ -28,4 +28,17 @@ class BlogPostController extends Controller
             $post
         );
     }
+
+    public function update(ApiStoreBlogPostAppRequest $request, BlogPost $blogPost): BlogPostResource
+    {
+        $post = $this->service->update(
+            $blogPost,
+            $request->validated('title'),
+            $request->validated('body'),
+        );
+
+        return BlogPostResource::make(
+            $post
+        );
+    }
 }
