@@ -22,8 +22,8 @@ class StoreBlogPostAppRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'max:80'],
-            'body' => ['required', 'max:1024'],
+            'payload.data.title' => ['required', 'max:80'],
+            'payload.data.body' => ['required', 'max:1024'],
         ];
     }
 }

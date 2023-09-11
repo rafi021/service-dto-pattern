@@ -2,25 +2,27 @@
 
 namespace App\Services\Blog;
 
+use App\DTOs\BlogPostDTO;
 use App\Models\BlogPost;
 use App\Enums\BlogPostSource;
 
 class BlogPostService
 {
-    public function store(string $title, string $body, BlogPostSource $blogPostSource)
+    public function store(BlogPostDTO $blogPostDTO)
     {
        return BlogPost::create([
-            'title' => $title,
-            'body' => $body,
-            'source' => $blogPostSource,
+            'title' => $blogPostDTO->title,
+            'body' => $blogPostDTO->body,
+            'source' => $blogPostDTO->source,
         ]);
     }
 
-    public function update(BlogPost $blogPost, string $title, string $body)
+    public function update(BlogPost $blogPost, BlogPostDTO $blogPostDTO)
     {
        return tap($blogPost)->update([
-            'title' => $title,
-            'body' => $body
+            'title' => $blogPostDTO->title,
+            'body' => $blogPostDTO->body,
+            'source' => $blogPostDTO->source,
         ]);
     }
 }

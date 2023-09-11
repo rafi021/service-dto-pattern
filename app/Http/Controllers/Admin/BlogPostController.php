@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\BlogPost;
+use App\DTOs\BlogPostDTO;
 use Illuminate\Http\Request;
 use App\Enums\BlogPostSource;
 use Illuminate\Http\JsonResponse;
@@ -17,23 +18,19 @@ class BlogPostController extends Controller
 
     public function store(StoreBlogPostAppRequest $request): BlogPostResource
     {
-        $post = $this->service->store(
-            $request->validated('title'),
-            $request->validated('body'),
-            BlogPostSource::App
-        );
-
-        return BlogPostResource::make(
-            $post
-        );
+        $post = $this->service->store(BlogPostDTO::fromAppRequest($request));
+        return BlogPostResource::make($post);
     }
 
     public function update(StoreBlogPostAppRequest $request, BlogPost $blogPost): BlogPostResource
     {
         $post = $this->service->update(
             $blogPost,
-            $request->validated('title'),
-            $request->validated('body'),
+            new BlogPostDTO(
+                title: $request->validated('title'),
+                body: $request->validated('body'),
+                source: BlogPostSource::App
+            )
         );
 
         return BlogPostResource::make(

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\DTOs\BlogPostDTO;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
 use App\Enums\BlogPostSource;
@@ -18,23 +19,19 @@ class BlogPostController extends Controller
 
     public function store(ApiStoreBlogPostAppRequest $request): BlogPostResource
     {
-        $post = $this->service->store(
-            $request->validated('title'),
-            $request->validated('body'),
-            BlogPostSource::App
-        );
-
-        return BlogPostResource::make(
-            $post
-        );
+        $post = $this->service->store(BlogPostDTO::fromApiRequest($request));
+        return BlogPostResource::make($post);
     }
 
     public function update(ApiStoreBlogPostAppRequest $request, BlogPost $blogPost): BlogPostResource
     {
         $post = $this->service->update(
             $blogPost,
-            $request->validated('title'),
-            $request->validated('body'),
+            new BlogPostDTO(
+                title: $request->validated('payload.data.title'),
+                body: $request->validated('payload.data.body'),
+                source: BlogPostSource::Api
+            )
         );
 
         return BlogPostResource::make(
